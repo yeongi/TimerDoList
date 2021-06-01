@@ -9,41 +9,43 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
+public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.MyViewHolder> {
     // 이 데이터들을 가지고 각 뷰 홀더에 들어갈 텍스트 뷰에 연결할 것
     private String[] textSet;
     private int[] imgSet;
     private double[] timeSet;
-    private MainActivity mainActivity;
+    private FragMain fragMain;
 
-    public MyAdapter(String[] textSet, int[] imgSet, double[] timeSet, MainActivity mainActivity) {
+    public MyRecyclerViewAdapter(String[] textSet, int[] imgSet, double[] timeSet,FragMain fragMain) {
         this.textSet = textSet;
         this.imgSet = imgSet;
         this.timeSet = timeSet;
-        this.mainActivity = mainActivity ;
+        this.fragMain = fragMain;
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
+        private final FragMain fragMain;
         //리사이클러 뷰에 들어갈 뷰 홀더 그리고 그 뷰 홀더에 들어갈 아이템들을 지정
         public ImageView imageView;
         public TextView textView;
         public TextView doText;
-        public TextView nowDoText;
         public Button sendButton;
         private double[] timeSet;
         private String[] textSet;
 
-        public MyViewHolder(@NonNull View view,double[] timeSet,String[] textSet) {
+
+        public MyViewHolder(@NonNull View view, double[] timeSet, String[] textSet, FragMain fragMain) {
             super(view);
             this.imageView = view.findViewById(R.id.iv_pic);
             this.textView = view.findViewById(R.id.tv_text);
             this.doText = view.findViewById(R.id.doText);
-            this.nowDoText = view.findViewById(R.id.nowDoText);
             this.sendButton = view.findViewById(R.id.SendButton);
             this.timeSet = timeSet;
             this.textSet = textSet;
+            this.fragMain = fragMain;
         }
 
         private Double getTime(int position) {
@@ -62,7 +64,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View holderView = LayoutInflater.from(parent.getContext()).inflate(R.layout.holder_view,parent,false);
-        MyViewHolder myViewHolder = new MyViewHolder(holderView,timeSet,textSet);
+        MyViewHolder myViewHolder = new MyViewHolder(holderView,timeSet,textSet,fragMain);
         return myViewHolder;
     }
 
@@ -77,14 +79,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             @Override
             public void onClick(View v) {
                 String temp = (myViewHolder.doText.getText()).toString();
-                if(mainActivity.timerStarted){
-                    Toast.makeText(mainActivity, "타이머가 실행 중 입니다.", Toast.LENGTH_SHORT).show();
+                if(myViewHolder.fragMain.timerStarted){
+                    Toast.makeText(fragMain.ct, "타이머가 실행 중 입니다.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                mainActivity.nowDoText.setText(myViewHolder.getDoText(position));
-                mainActivity.timerText.setText("");
-                mainActivity.time = myViewHolder.getTime(position);
-                mainActivity.doTime = myViewHolder.getTime(position);
+                myViewHolder.fragMain.nowDoText.setText(myViewHolder.getDoText(position));
+                myViewHolder.fragMain.timerText.setText("");
+                myViewHolder.fragMain.time = myViewHolder.getTime(position);
+                myViewHolder.fragMain.doTime = myViewHolder.getTime(position);
             }
         });
 
