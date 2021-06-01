@@ -85,15 +85,22 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         myViewHolder.sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String temp = (myViewHolder.doText.getText()).toString();
-                if(myViewHolder.fragMain.timerStarted){
-                    Toast.makeText(myViewHolder.fragMain.getContext(), "타이머가 실행 중 입니다.", Toast.LENGTH_SHORT).show();
+                if(myViewHolder.fragMain.CurrentMode == Mode.TIMER_MODE){
+                    String temp = (myViewHolder.doText.getText()).toString();
+                    if(myViewHolder.fragMain.timerStarted){
+                        Toast.makeText(myViewHolder.fragMain.getContext(), "타이머가 실행 중 입니다.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    myViewHolder.fragMain.nowDoText.setText(myViewHolder.getDoText(position));
+                    myViewHolder.fragMain.timerText.setText("");
+                    myViewHolder.fragMain.time = myViewHolder.getTime(position);
+                    myViewHolder.fragMain.doTime = myViewHolder.getTime(position);
                     return;
                 }
-                myViewHolder.fragMain.nowDoText.setText(myViewHolder.getDoText(position));
-                myViewHolder.fragMain.timerText.setText("");
-                myViewHolder.fragMain.time = myViewHolder.getTime(position);
-                myViewHolder.fragMain.doTime = myViewHolder.getTime(position);
+                if (myViewHolder.fragMain.CurrentMode == Mode.STOP_WATCH){
+                    Toast.makeText(myViewHolder.fragMain.getContext(), "스탑 워치 리스트 구현 예정", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
