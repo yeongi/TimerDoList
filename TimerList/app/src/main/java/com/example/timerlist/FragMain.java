@@ -18,9 +18,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Timer;
 import java.util.TimerTask;
+enum Mode {
+    TIMER_MODE ,STOP_WATCH
+};
+
 
 public class FragMain extends Fragment{
     private ViewGroup rootview;
@@ -38,9 +43,14 @@ public class FragMain extends Fragment{
     TextView nowDoText;
 
     //타이머 변수들
+    //모드 설정 기본값은 타이머
+
+    Mode CurrentMode = Mode.TIMER_MODE;
     TextView timerText;
+    TextView modeText;
     Button stopStartButton;
     Button resetButton;
+    Button modeButton;
     Timer timer;
     TimerTask timerTask;
     Double time = 0.0;
@@ -51,7 +61,7 @@ public class FragMain extends Fragment{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootview = (ViewGroup) inflater.inflate(R.layout.frag_main,container,false);
-        ct = container.getContext();
+        ct = rootview.getContext();
 
         //타이머 ID 설정
         timer = new Timer();
@@ -60,6 +70,10 @@ public class FragMain extends Fragment{
         stopStartButton.setOnClickListener(this::startStopTapped);
         resetButton =  rootview.findViewById(R.id.resetBtn);
         resetButton.setOnClickListener(this::resetTapped);
+        modeButton = rootview.findViewById(R.id.modeChangeButton);
+        modeButton.setOnClickListener(this::modeChange);
+        modeText = rootview.findViewById(R.id.modeText);
+
 
         //리사이클러 ID 설정
         recyclerView =  rootview.findViewById(R.id.recycler_view);
@@ -78,42 +92,89 @@ public class FragMain extends Fragment{
 
 
         //어댑터 할당, 어댑터는 기본 어댑터를 확장한 커스텀 어댑터를 사용할 것
-        adapter = new MyRecyclerViewAdapter(textSet,imgSet,timeSet,this);
+        adapter = new MyRecyclerViewAdapter(textSet,imgSet,timeSet,FragMain.this,ct);
         recyclerView.setAdapter(adapter);
 
         return  rootview;
     }
 
     //타이머 설정
-    public void resetTapped(View view){
-        AlertDialog.Builder resetAlert = new AlertDialog.Builder(ct);
-        resetAlert.setTitle("ResetTimer");
-        resetAlert.setMessage("Reset?");
-        resetAlert.setPositiveButton("RESET", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if(timerTask != null){
-                    timerTask.cancel();
-                    setButtonUI("S",R.color.green);
-                    time = doTime;
-                    timerStarted = false;
-                    timerText.setText(getTimerText(doTime));
-                }
-            }
-        });
-        resetAlert.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //do nothing
-            }
-        });
+    public void modeChange(View view){
 
-        resetAlert.show();
+        //실행 중엔 변경 불가
+        if(timerStarted){
+            Toast.makeText(ct, "타이머가 실행 중 입니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        change();
+
+    }
+
+    public void resetTapped(View view){
+        if(CurrentMode == Mode.TIMER_MODE) {
+            AlertDialog.Builder resetAlert = new AlertDialog.Builder(ct);
+            resetAlert.setTitle("ResetTimer");
+            resetAlert.setMessage("타이머를 초기화 시키겠습니까?");
+            resetAlert.setPositiveButton("RESET", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if(timerTask != null){
+                        timerTask.cancel();
+                        setButtonUI("S",R.color.green);
+                        time = doTime;
+                        timerStarted = false;
+                        timerText.setText(getTimerText(doTime));
+                    }
+                }
+            });
+            resetAlert.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //do nothing
+                }
+            });
+
+            resetAlert.show();
+
+        }
+        if(CurrentMode == Mode.STOP_WATCH){
+            AlertDialog.Builder resetAlert = new AlertDialog.Builder(ct);
+            resetAlert.setTitle("Reset");
+            resetAlert.setMessage("스탑워치를 초기화 시키겠습니까?");
+            resetAlert.setPositiveButton("RESET", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if(timerTask != null){
+                        timerTask.cancel();
+                        setButtonUI("S",R.color.green);
+                        time = 0.0;
+                        timerStarted = false;
+                        timerText.setText(getTimerText(0.0));
+                    }
+                }
+            });
+            resetAlert.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //do nothing
+                }
+            });
+
+            resetAlert.show();
+
+        }
+
     }
 
     public void startStopTapped(View view){
 
         if(timerStarted == false){
+            if(CurrentMode == Mode.TIMER_MODE && time == 0.0){
+                Toast.makeText(ct, "할 일을 고르세요.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             timerStarted = true;
             setButtonUI("S", R.color.red);
 
@@ -129,34 +190,29 @@ public class FragMain extends Fragment{
 
 
     private void startTimer() {
-        timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                if(time>0)
-                    time--;
+        if(CurrentMode == Mode.TIMER_MODE){
+            timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    if(time>0)
+                        time--;
 
-                timerText.setText(getTimerText(time));
-            }
-        };
+                    timerText.setText(getTimerText(time));
+                }
+            };
+            timer.scheduleAtFixedRate(timerTask,0,1000);
+        }
 
-        /*
-        timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(time>0)
-                            time--;
-
-                        timerText.setText(getTimerText(time));
-                    }
-                });
-            }
-        };
-
-         */
-        timer.scheduleAtFixedRate(timerTask,0,1000);
+        if(CurrentMode == Mode.STOP_WATCH){
+            timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    time++;
+                    timerText.setText(getTimerText(time));
+                }
+            };
+            timer.scheduleAtFixedRate(timerTask,0,1000);
+        }
 
 
     }
@@ -181,6 +237,30 @@ public class FragMain extends Fragment{
     private void setButtonUI(String start, int color) {
         stopStartButton.setText(start);
         stopStartButton.setTextColor(ContextCompat.getColor(ct, color));
+    }
+
+    private void change(){
+        if (CurrentMode == Mode.TIMER_MODE) {
+
+            CurrentMode = Mode.STOP_WATCH;
+            modeText.setText("STOPWATCH");
+            nowDoText.setText("시간 잴 일");
+            timerText.setText(getTimerText(0.0));
+            time = 0.0;
+
+            return;
+        }
+
+        if (CurrentMode == Mode.STOP_WATCH) {
+
+            CurrentMode = Mode.TIMER_MODE;
+            modeText.setText("TIMER");
+            nowDoText.setText("DO");
+            timerText.setText("시간");
+            time = 0.0;
+
+            return;
+        }
     }
 
 }

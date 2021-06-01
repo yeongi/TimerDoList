@@ -1,5 +1,6 @@
 package com.example.timerlist;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,16 +19,19 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     private int[] imgSet;
     private double[] timeSet;
     private FragMain fragMain;
+    private Context context;
 
-    public MyRecyclerViewAdapter(String[] textSet, int[] imgSet, double[] timeSet,FragMain fragMain) {
+
+    public MyRecyclerViewAdapter(String[] textSet, int[] imgSet, double[] timeSet,FragMain fragMain, Context context) {
         this.textSet = textSet;
         this.imgSet = imgSet;
         this.timeSet = timeSet;
         this.fragMain = fragMain;
+        this.context = context;
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
-        private final FragMain fragMain;
+
         //리사이클러 뷰에 들어갈 뷰 홀더 그리고 그 뷰 홀더에 들어갈 아이템들을 지정
         public ImageView imageView;
         public TextView textView;
@@ -35,9 +39,11 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         public Button sendButton;
         private double[] timeSet;
         private String[] textSet;
+        private FragMain fragMain;
+        private Context context;
 
 
-        public MyViewHolder(@NonNull View view, double[] timeSet, String[] textSet, FragMain fragMain) {
+        public MyViewHolder(@NonNull View view, double[] timeSet, String[] textSet,FragMain fragMain,Context context) {
             super(view);
             this.imageView = view.findViewById(R.id.iv_pic);
             this.textView = view.findViewById(R.id.tv_text);
@@ -46,6 +52,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
             this.timeSet = timeSet;
             this.textSet = textSet;
             this.fragMain = fragMain;
+            this.context = context;
         }
 
         private Double getTime(int position) {
@@ -64,7 +71,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View holderView = LayoutInflater.from(parent.getContext()).inflate(R.layout.holder_view,parent,false);
-        MyViewHolder myViewHolder = new MyViewHolder(holderView,timeSet,textSet,fragMain);
+        MyViewHolder myViewHolder = new MyViewHolder(holderView,timeSet,textSet,fragMain,context);
         return myViewHolder;
     }
 
@@ -80,7 +87,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
             public void onClick(View v) {
                 String temp = (myViewHolder.doText.getText()).toString();
                 if(myViewHolder.fragMain.timerStarted){
-                    Toast.makeText(fragMain.ct, "타이머가 실행 중 입니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(myViewHolder.fragMain.getContext(), "타이머가 실행 중 입니다.", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 myViewHolder.fragMain.nowDoText.setText(myViewHolder.getDoText(position));

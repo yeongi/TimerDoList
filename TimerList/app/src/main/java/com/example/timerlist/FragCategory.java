@@ -9,18 +9,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-public class FragStop extends Fragment {
+public class FragCategory extends Fragment {
     private View view;
 
-    public static FragStop newInstance(){
-        FragStop fragStop = new FragStop();
-        return fragStop;
+    public static FragCategory newInstance(){
+        FragCategory fragCategory = new FragCategory();
+        return fragCategory;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_frag_stop,container,false);
+        view = inflater.inflate(R.layout.fragment_frag_category,container,false);
 
         return view;
     }
