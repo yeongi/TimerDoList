@@ -44,7 +44,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return "Calendar";
             case 2:
-                return "StopWatch";
+                return "DoList";
             default:
                 return null;
         }

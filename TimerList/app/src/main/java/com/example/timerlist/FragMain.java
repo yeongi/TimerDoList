@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,6 +21,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 enum Mode {
@@ -27,9 +29,10 @@ enum Mode {
 };
 
 
-public class FragMain extends Fragment{
+public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private ViewGroup rootview;
     Context ct;
+    SwipeRefreshLayout mySwipeRefreshLayout;
 
     public static FragMain newInstance(){
         FragMain FragMain = new FragMain();
@@ -44,24 +47,33 @@ public class FragMain extends Fragment{
 
     //타이머 변수들
     //모드 설정 기본값은 타이머
-
     Mode CurrentMode = Mode.TIMER_MODE;
     TextView timerText;
     TextView modeText;
     Button stopStartButton;
     Button resetButton;
     Button modeButton;
+    Button saveButton;
     Timer timer;
     TimerTask timerTask;
     Double time = 0.0;
     Double doTime = 0.0;
     boolean timerStarted = false;
 
+    //할 일 변수
+    ArrayList<List> Doing = new ArrayList<List>();
+    String[] doingSet;
+    double[] timeSet;
+    int[] imgSet;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootview = (ViewGroup) inflater.inflate(R.layout.frag_main,container,false);
+        //fragment의 context 가져 오기
         ct = rootview.getContext();
+
+        Doing.add(new List("임시",500,R.drawable.checkmark,2));
 
         //타이머 ID 설정
         timer = new Timer();
@@ -74,6 +86,9 @@ public class FragMain extends Fragment{
         modeButton.setOnClickListener(this::modeChange);
         modeText = rootview.findViewById(R.id.modeText);
 
+        //저장버튼
+        saveButton = rootview.findViewById(R.id.saveButton);
+        saveButton.setOnClickListener(this::saveDoing);
 
         //리사이클러 ID 설정
         recyclerView =  rootview.findViewById(R.id.recycler_view);
@@ -82,20 +97,29 @@ public class FragMain extends Fragment{
         layoutManager = new LinearLayoutManager(ct);
         recyclerView.setLayoutManager(layoutManager);
 
-        String[] textSet = {"1분","하루 3번 3분 양치질","5분 책 읽기","하루 10분 걷기"};
-        double[] timeSet = {60,180,300,600};
-        int[] imgSet = {R.drawable.checkmark,
-                R.drawable.todolist_icon,
-                R.drawable.todolist_icon,
-                R.drawable.checkmark};
         nowDoText = rootview.findViewById(R.id.nowDoText);
 
 
         //어댑터 할당, 어댑터는 기본 어댑터를 확장한 커스텀 어댑터를 사용할 것
-        adapter = new MyRecyclerViewAdapter(textSet,imgSet,timeSet,FragMain.this,ct);
+        adapter = new MyRecyclerViewAdapter(Doing,FragMain.this,ct);
         recyclerView.setAdapter(adapter);
 
+        //리프레쉬 뷰
+        mySwipeRefreshLayout = (SwipeRefreshLayout)rootview.findViewById(R.id.swipe_layout);
+        mySwipeRefreshLayout.setOnRefreshListener(this);
+
+
         return  rootview;
+    }
+
+
+    //리프레쉬 뷰 할 일
+    @Override
+    public void onRefresh() {
+        //새로고침
+
+        //새로고침 완료
+        mySwipeRefreshLayout.setRefreshing(false);
     }
 
     //타이머 설정
@@ -188,6 +212,11 @@ public class FragMain extends Fragment{
 
     }
 
+    private void saveDoing(View view) {
+        Doing.add(new List("인공지능",100,R.drawable.checkmark,2));
+    }
+
+
 
     private void startTimer() {
         if(CurrentMode == Mode.TIMER_MODE){
@@ -247,7 +276,7 @@ public class FragMain extends Fragment{
             nowDoText.setText("시간 잴 일");
             timerText.setText(getTimerText(0.0));
             time = 0.0;
-
+            saveButton.setVisibility(View.VISIBLE);
             return;
         }
 
@@ -258,9 +287,11 @@ public class FragMain extends Fragment{
             nowDoText.setText("DO");
             timerText.setText("시간");
             time = 0.0;
+            saveButton.setVisibility(View.INVISIBLE);
 
             return;
         }
     }
+
 
 }

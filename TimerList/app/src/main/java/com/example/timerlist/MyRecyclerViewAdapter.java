@@ -13,19 +13,17 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+
 public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.MyViewHolder> {
     // 이 데이터들을 가지고 각 뷰 홀더에 들어갈 텍스트 뷰에 연결할 것
-    private String[] textSet;
-    private int[] imgSet;
-    private double[] timeSet;
+    ArrayList<List> items;
     private FragMain fragMain;
     private Context context;
 
 
-    public MyRecyclerViewAdapter(String[] textSet, int[] imgSet, double[] timeSet,FragMain fragMain, Context context) {
-        this.textSet = textSet;
-        this.imgSet = imgSet;
-        this.timeSet = timeSet;
+    public MyRecyclerViewAdapter(ArrayList<List> items,FragMain fragMain, Context context) {
+        this.items = items;
         this.fragMain = fragMain;
         this.context = context;
     }
@@ -37,30 +35,44 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         public TextView textView;
         public TextView doText;
         public Button sendButton;
-        private double[] timeSet;
-        private String[] textSet;
         private FragMain fragMain;
         private Context context;
 
 
-        public MyViewHolder(@NonNull View view, double[] timeSet, String[] textSet,FragMain fragMain,Context context) {
+        public MyViewHolder(@NonNull View view,FragMain fragMain,Context context) {
             super(view);
             this.imageView = view.findViewById(R.id.iv_pic);
             this.textView = view.findViewById(R.id.tv_text);
             this.doText = view.findViewById(R.id.doText);
             this.sendButton = view.findViewById(R.id.SendButton);
-            this.timeSet = timeSet;
-            this.textSet = textSet;
             this.fragMain = fragMain;
             this.context = context;
         }
 
-        private Double getTime(int position) {
-            return timeSet[position];
-        }
-
-        private String getDoText(int position) {
-            return textSet[position];
+        public void setItem(List item){
+            textView.setText(item.getDoing());
+            doText.setText(item.getDoing());
+            imageView.setImageResource(item.getImage());
+            sendButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(fragMain.CurrentMode == Mode.TIMER_MODE){
+                        String temp = (doText.getText()).toString();
+                        if(fragMain.timerStarted){
+                            Toast.makeText(fragMain.getContext(), "타이머가 실행 중 입니다.", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        fragMain.nowDoText.setText(doText.getText());
+                        fragMain.timerText.setText("");
+                        fragMain.time = item.getTime();
+                        fragMain.doTime = item.getTime();
+                        return;
+                    }
+                    if (fragMain.CurrentMode == Mode.STOP_WATCH){
+                        Toast.makeText(fragMain.getContext(), "스탑 워치 리스트 구현 예정", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         }
     }
 
@@ -71,7 +83,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View holderView = LayoutInflater.from(parent.getContext()).inflate(R.layout.holder_view,parent,false);
-        MyViewHolder myViewHolder = new MyViewHolder(holderView,timeSet,textSet,fragMain,context);
+        MyViewHolder myViewHolder = new MyViewHolder(holderView,fragMain,context);
         return myViewHolder;
     }
 
@@ -79,36 +91,18 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int position) {
         //데이터를 연결한다.
+        List item = items.get(position);
+        myViewHolder.setItem(item);
         myViewHolder.textView.setText("DO");
-        myViewHolder.doText.setText(this.textSet[position]);
-        myViewHolder.imageView.setBackgroundResource(this.imgSet[position]);
-        myViewHolder.sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(myViewHolder.fragMain.CurrentMode == Mode.TIMER_MODE){
-                    String temp = (myViewHolder.doText.getText()).toString();
-                    if(myViewHolder.fragMain.timerStarted){
-                        Toast.makeText(myViewHolder.fragMain.getContext(), "타이머가 실행 중 입니다.", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    myViewHolder.fragMain.nowDoText.setText(myViewHolder.getDoText(position));
-                    myViewHolder.fragMain.timerText.setText("");
-                    myViewHolder.fragMain.time = myViewHolder.getTime(position);
-                    myViewHolder.fragMain.doTime = myViewHolder.getTime(position);
-                    return;
-                }
-                if (myViewHolder.fragMain.CurrentMode == Mode.STOP_WATCH){
-                    Toast.makeText(myViewHolder.fragMain.getContext(), "스탑 워치 리스트 구현 예정", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });
-
     }
 
     //리사이클러뷰안에 들어갈 뷰 홀더의 개수
     @Override
     public int getItemCount() {
-        return textSet.length > imgSet.length ? textSet.length : imgSet.length;
+        return items.size();
+    }
+
+    public void addItem(List item){
+        items.add(item);
     }
 }
