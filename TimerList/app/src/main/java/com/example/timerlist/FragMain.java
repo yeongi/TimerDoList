@@ -54,6 +54,7 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
     Button resetButton;
     Button modeButton;
     Button saveButton;
+    Button deleteButton;
     Timer timer;
     TimerTask timerTask;
     Double time = 0.0;
@@ -73,8 +74,6 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
         //fragment의 context 가져 오기
         ct = rootview.getContext();
 
-        Doing.add(new List("임시",500,R.drawable.checkmark,2));
-
         //타이머 ID 설정
         timer = new Timer();
         timerText =  rootview.findViewById(R.id.timerTextView);
@@ -89,6 +88,9 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
         //저장버튼
         saveButton = rootview.findViewById(R.id.saveButton);
         saveButton.setOnClickListener(this::saveDoing);
+
+        //삭제버튼
+        deleteButton = rootview.findViewById(R.id.deleteButton);
 
         //리사이클러 ID 설정
         recyclerView =  rootview.findViewById(R.id.recycler_view);

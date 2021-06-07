@@ -35,6 +35,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         public TextView textView;
         public TextView doText;
         public Button sendButton;
+        public Button deleteButton;
         private FragMain fragMain;
         private Context context;
 
@@ -45,6 +46,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
             this.textView = view.findViewById(R.id.tv_text);
             this.doText = view.findViewById(R.id.doText);
             this.sendButton = view.findViewById(R.id.SendButton);
+            this.deleteButton = view.findViewById(R.id.deleteButton);
             this.fragMain = fragMain;
             this.context = context;
         }
@@ -71,6 +73,28 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                     if (fragMain.CurrentMode == Mode.STOP_WATCH){
                         Toast.makeText(fragMain.getContext(), "스탑 워치 리스트 구현 예정", Toast.LENGTH_SHORT).show();
                     }
+                }
+            });
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //삭제 구현
+                    if(fragMain.CurrentMode == Mode.TIMER_MODE){
+                        //ToDoList 모드 일때 삭제 버튼
+                        //리스트에서 삭제
+                        try{
+                            fragMain.Doing.remove(getAdapterPosition());
+                        }catch (ArrayIndexOutOfBoundsException e){
+
+                        }
+                        //어댑터에서 리사이클러 뷰에 반영
+                        return;
+                    }
+                    if (fragMain.CurrentMode == Mode.STOP_WATCH){
+                        //수정예정
+                        Toast.makeText(fragMain.getContext(), "스탑 워치 리스트 구현 예정", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
             });
         }
