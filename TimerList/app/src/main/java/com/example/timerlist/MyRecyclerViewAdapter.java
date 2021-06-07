@@ -83,7 +83,9 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                         //ToDoList 모드 일때 삭제 버튼
                         //리스트에서 삭제
                         try{
-                            fragMain.Doing.remove(getAdapterPosition());
+                            if(fragMain.Doing.size() > 0 ){
+                                fragMain.Doing.remove(getAdapterPosition());
+                            }
                         }catch (ArrayIndexOutOfBoundsException e){
 
                         }

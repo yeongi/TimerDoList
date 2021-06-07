@@ -18,6 +18,7 @@
         <LinearLayout
             android:layout_width="114dp"
             android:layout_height="137dp"
+            android:layout_gravity="center|top"
             android:gravity="center|right"
             android:orientation="vertical">
 
@@ -25,13 +26,14 @@
                 android:id="@+id/iv_pic"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_gravity="center|right"
+                android:layout_gravity="center"
                 android:layout_margin="5dp" />
 
             <TextView
                 android:id="@+id/tv_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="테스트용"
                 android:textSize="20dp" />
 
@@ -40,6 +42,7 @@
         <LinearLayout
             android:layout_width="300dp"
             android:layout_height="match_parent"
+            android:layout_weight="5"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -67,7 +70,7 @@
                     android:layout_height="40sp"
                     android:layout_gravity="center"
                     android:layout_margin="20sp"
-                    android:layout_weight="1"
+                    android:layout_weight="3"
                     android:background="#BA5252"
                     android:backgroundTint="#A93B3B"
                     android:minWidth="30dp"
@@ -76,10 +79,10 @@
                 <Button
                     android:id="@+id/deleteButton"
                     android:layout_width="40sp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40sp"
                     android:layout_gravity="center"
                     android:layout_marginRight="20sp"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:text="Delete" />
             </LinearLayout>
 
