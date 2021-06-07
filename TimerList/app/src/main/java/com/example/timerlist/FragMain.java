@@ -214,8 +214,14 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
 
     }
 
+
+    //save 버튼 눌렀을 때
     private void saveDoing(View view) {
+        //창을 하나 띄어서
+        // 이밑에 인공지능 100 이미지 중요도 매개변수에 각각 넣으면 됨
+        //
         Doing.add(new List("인공지능",100,R.drawable.checkmark,2));
+        Doing.add(new List("정주형",5000,R.drawable.checkmark,500));
     }
 
 
