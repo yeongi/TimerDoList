@@ -1,4 +1,4 @@
-package com.example.timerlist;
+package com.example.timerlist.fragment;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,14 +10,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.timerlist.R;
+import com.example.timerlist.data.List;
+import com.example.timerlist.db.DBHelper;
 
 import java.util.ArrayList;
 
 public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.MyViewHolder> {
     // 이 데이터들을 가지고 각 뷰 홀더에 들어갈 텍스트 뷰에 연결할 것
     ArrayList<List> items;
+    private DBHelper mDBHelper;
     private FragMain fragMain;
     private Context context;
 
@@ -26,6 +30,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         this.items = items;
         this.fragMain = fragMain;
         this.context = context;
+        mDBHelper = new DBHelper(context);
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{

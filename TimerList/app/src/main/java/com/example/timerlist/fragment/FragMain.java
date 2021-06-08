@@ -1,16 +1,14 @@
-package com.example.timerlist;
+package com.example.timerlist.fragment;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -18,10 +16,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.timerlist.data.List;
+import com.example.timerlist.R;
+import com.example.timerlist.db.DBHelper;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 enum Mode {
@@ -33,6 +38,7 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
     private ViewGroup rootview;
     Context ct;
     SwipeRefreshLayout mySwipeRefreshLayout;
+    private DBHelper mDBHelper;
 
     public static FragMain newInstance(){
         FragMain FragMain = new FragMain();
@@ -61,11 +67,13 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
     Double doTime = 0.0;
     boolean timerStarted = false;
 
+    //다이얼로그 변수
+    EditText inputText;
+    EditText inputTime;
+    EditText inputImportant;
+
     //할 일 변수
-    ArrayList<List> Doing = new ArrayList<List>();
-    String[] doingSet;
-    double[] timeSet;
-    int[] imgSet;
+    ArrayList<List> Doing;
 
     @Nullable
     @Override
@@ -92,26 +100,43 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
         //삭제버튼
         deleteButton = rootview.findViewById(R.id.deleteButton);
 
-        //리사이클러 ID 설정
-        recyclerView =  rootview.findViewById(R.id.recycler_view);
-        recyclerView.setHasFixedSize(true);
 
-        layoutManager = new LinearLayoutManager(ct);
-        recyclerView.setLayoutManager(layoutManager);
 
         nowDoText = rootview.findViewById(R.id.nowDoText);
 
 
         //어댑터 할당, 어댑터는 기본 어댑터를 확장한 커스텀 어댑터를 사용할 것
-        adapter = new MyRecyclerViewAdapter(Doing,FragMain.this,ct);
-        recyclerView.setAdapter(adapter);
+        //adapter = new MyRecyclerViewAdapter(Doing,FragMain.this,ct);
+        //recyclerView.setAdapter(adapter);
+
 
         //리프레쉬 뷰
         mySwipeRefreshLayout = (SwipeRefreshLayout)rootview.findViewById(R.id.swipe_layout);
         mySwipeRefreshLayout.setOnRefreshListener(this);
 
 
+        setDBInit();
+
         return  rootview;
+    }
+
+    private void setDBInit() {
+        //리사이클러 ID 설정
+        recyclerView =  rootview.findViewById(R.id.recycler_view);
+        layoutManager = new LinearLayoutManager(ct);
+        recyclerView.setLayoutManager(layoutManager);
+        //DB설정
+        mDBHelper = new DBHelper(ct);
+        loadRecentDB();
+    }
+
+    private void loadRecentDB() {
+        Doing = mDBHelper.getTodoList();
+        if (adapter == null){
+            adapter = new MyRecyclerViewAdapter(Doing,FragMain.this,ct);
+        }
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapter);
     }
 
 
@@ -119,7 +144,7 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
     @Override
     public void onRefresh() {
         //새로고침
-
+        recyclerView.setAdapter(adapter);
         //새로고침 완료
         mySwipeRefreshLayout.setRefreshing(false);
     }
@@ -219,9 +244,44 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
     private void saveDoing(View view) {
         //창을 하나 띄어서
         // 이밑에 인공지능 100 이미지 중요도 매개변수에 각각 넣으면 됨
-        //
-        Doing.add(new List("인공지능",100,R.drawable.checkmark,2));
-        Doing.add(new List("정주형",5000,R.drawable.checkmark,500));
+        //창을 하나 띄어서
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View dialogView = getLayoutInflater().inflate(R.layout.save_dialog,null);
+
+        inputText = (EditText) dialogView.findViewById(R.id.inputText);
+        inputTime = (EditText) dialogView.findViewById(R.id.inputTime);
+        inputImportant = (EditText) dialogView.findViewById(R.id.inputImport);
+
+        builder.setView(dialogView);
+        builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //나중에 db로 구현
+                //DB에 삽입
+                String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                mDBHelper.InsertTodo(
+                        inputText.getText().toString(),
+                        Integer.parseInt(inputTime.getText().toString()),
+                        Integer.parseInt(inputImportant.getText().toString()),
+                        currentTime
+                );
+
+                // 삽입이 된 디비의 기본키를 찾아야 되 그래야 리스트를 초기화 할 수 있어..
+
+                //UI에 삽입
+                Doing.add(mDBHelper.getLastList());
+
+            }
+        });
+        builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.show();
     }
 
 

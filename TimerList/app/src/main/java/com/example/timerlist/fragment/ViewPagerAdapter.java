@@ -1,10 +1,14 @@
-package com.example.timerlist;
+package com.example.timerlist.fragment;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+
+import com.example.timerlist.fragment.FragCal;
+import com.example.timerlist.fragment.FragCategory;
+import com.example.timerlist.fragment.FragMain;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
     public ViewPagerAdapter(@NonNull FragmentManager fm) {

@@ -1,4 +1,4 @@
-package com.example.timerlist;
+package com.example.timerlist.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+
+import com.example.timerlist.R;
 
 import java.util.Calendar;
 import devs.mulham.horizontalcalendar.HorizontalCalendar;

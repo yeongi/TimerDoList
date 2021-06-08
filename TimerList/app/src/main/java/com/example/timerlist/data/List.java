@@ -1,17 +1,25 @@
-package com.example.timerlist;
+package com.example.timerlist.data;
+
+import com.example.timerlist.R;
+
+import java.util.Date;
 
 public class List {
+    int id;
     String doing;
     double time;
     int image;
     int important;
+    String writeDate;
 
 
-    public List(String doing, double time, int image, int important){
+    public List(int id , String doing, double time, int important, String date){
+        this.id = id;
         this.doing = doing;
         this.time = time;
-        this.image = image;
+        this.image = R.drawable.checkmark;
         this.important = important;
+        this.writeDate = date;
     }
 
     public String getDoing(){
@@ -29,4 +37,6 @@ public class List {
     public int getImportant(){
         return important;
     }
+
+    public String getWriteDate() {return writeDate;}
 }
