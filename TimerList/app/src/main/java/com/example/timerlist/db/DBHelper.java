@@ -116,7 +116,7 @@ public class DBHelper extends SQLiteOpenHelper
                 "VALUES('" + _content + "','" + _time +"','" + _important + "' ,'" + _writeDate + "','" + _category+"' );");
     }
 
-    // 목록 수정 + 카테고리
+
     public void UpdateTodo(String _content, int _time, int _important,String _beforeDate,String _category) {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("UPDATE TodoList SET content='" + _content + "'" +
@@ -124,6 +124,13 @@ public class DBHelper extends SQLiteOpenHelper
                 ", important = '"+_important+"'" +
                 ", category = '"+_category+"'" +
                 ", WHERE writeDate='" + _beforeDate + "'");
+    }
+
+    // 목록 수정 + 카테고리
+    public void UpdateSimpleTodo(String _content, int _time, String _category) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("UPDATE TodoList SET content='" + _content + "'" +
+                ",time = '" + _time + "' WHERE category='"+_category+"'");
     }
 
     // 목록 삭제

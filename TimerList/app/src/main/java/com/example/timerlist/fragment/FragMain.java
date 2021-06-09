@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -44,7 +45,9 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
     SwipeRefreshLayout mySwipeRefreshLayout;
     private DBHelper mDBHelper;
 
-    public static FragMain newInstance(){
+    ArrayList<List> Doing = null;
+
+    public static FragMain newInstance( ){
         FragMain FragMain = new FragMain();
         return FragMain;
     }
@@ -77,7 +80,7 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
     EditText inputImportant;
 
     //할 일 변수
-    public ArrayList<List> Doing = null;
+
     ArrayList<String> categories = new ArrayList<String>();
     Spinner categorieSpinner;
     ArrayAdapter<String> myCategoryArrayAdapter;
@@ -85,6 +88,17 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        //프래그먼트 수신하기
+        getParentFragmentManager().setFragmentResultListener("todayList", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String key, @NonNull Bundle bundle) {
+                // We use a String here, but any type that can be put in a Bundle is supported
+                Doing = bundle.<List>getParcelableArrayList("todayList");
+                loadRecentDB();
+            }
+        });
+
         rootview = (ViewGroup) inflater.inflate(R.layout.frag_main,container,false);
         //fragment의 context 가져 오기
         ct = rootview.getContext();
@@ -110,7 +124,7 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
         nowDoText = rootview.findViewById(R.id.nowDoText);
 
         //리프레쉬 뷰
-        mySwipeRefreshLayout = (SwipeRefreshLayout)rootview.findViewById(R.id.swipe_layout);
+        mySwipeRefreshLayout = (SwipeRefreshLayout)rootview.findViewById(R.id.refreshDialog);
         mySwipeRefreshLayout.setOnRefreshListener(this);
 
         setDBInit();

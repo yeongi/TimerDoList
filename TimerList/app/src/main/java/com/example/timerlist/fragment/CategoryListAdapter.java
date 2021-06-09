@@ -13,6 +13,8 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.example.timerlist.DoCategoryListAdapter;
 import com.example.timerlist.R;
 import com.example.timerlist.data.List;
@@ -21,16 +23,18 @@ import com.example.timerlist.fragment.FragCategory;
 
 import java.util.ArrayList;
 
-public class CategoryListAdapter extends BaseAdapter {
+public class CategoryListAdapter extends BaseAdapter{
     ArrayList<MyCategory> items;
+    ArrayList<List> todayDo;
     Context context;
     FragCategory fragCategory;
     DoCategoryListAdapter myAdapter;
 
-    CategoryListAdapter(ArrayList<MyCategory> items, Context context, FragCategory fragCategory) {
+    CategoryListAdapter(ArrayList<MyCategory> items, Context context, FragCategory fragCategory,ArrayList<List> todayDo) {
         this.items = items;
         this.context = context;
         this.fragCategory = fragCategory;
+        this.todayDo = todayDo;
     }
 
     //position에 위치한 데이터를 화면에 출력하는데 사용할 View 를 리턴
@@ -62,8 +66,9 @@ public class CategoryListAdapter extends BaseAdapter {
 
                 final ListView listView = view.findViewById(R.id.categoryDoList);
 
-                myAdapter = new DoCategoryListAdapter(item.getCategoryTitle(),view.getContext());
+                myAdapter = new DoCategoryListAdapter(item.getCategoryTitle(),view.getContext(),todayDo);
                 AlertDialog.Builder builder = new AlertDialog.Builder(listView.getContext());
+                myAdapter.notifyDataSetChanged();
                 builder.setTitle(item.getCategoryTitle());
                 builder.setView(view);
 
@@ -75,10 +80,7 @@ public class CategoryListAdapter extends BaseAdapter {
                     }
                 });
 
-
-
                 builder.show();
-
             }
 
         });

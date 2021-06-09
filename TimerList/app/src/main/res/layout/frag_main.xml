@@ -138,7 +138,7 @@
         </LinearLayout>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipe_layout"
+            android:id="@+id/refreshDialog"
             android:layout_width="match_parent"
             android:layout_height="500sp"
             android:layout_weight="1">

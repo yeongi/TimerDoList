@@ -6,15 +6,18 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import com.example.timerlist.data.List;
 import com.example.timerlist.fragment.FragCal;
 import com.example.timerlist.fragment.FragCategory;
 import com.example.timerlist.fragment.FragMain;
+
+import java.util.ArrayList;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
     public ViewPagerAdapter(@NonNull FragmentManager fm) {
         super(fm);
     }
-
+    ArrayList<List> tempList;
 
     // 프래그먼트를 보여주는 처리를 구현한 곳
     @NonNull
