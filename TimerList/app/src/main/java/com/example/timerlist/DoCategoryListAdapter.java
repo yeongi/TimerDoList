@@ -65,6 +65,13 @@ public class DoCategoryListAdapter extends BaseAdapter {
             }
         });
 
+        editBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 다이얼로그 띄우기
+            }
+        });
+
         doText.setText(item.getDoing());
         timeText.setText(""+item.getTime());
 
