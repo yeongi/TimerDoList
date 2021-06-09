@@ -29,12 +29,16 @@ public class CategoryListAdapter extends BaseAdapter {
     //position에 위치한 데이터를 화면에 출력하는데 사용할 View 를 리턴
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        MyCategory item = items.get(position);
         if(convertView == null){
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.category_button,parent,false);
         }
         ImageButton imageButton = (ImageButton) convertView.findViewById(R.id.categoryImageButton);
         TextView textview = (TextView)convertView.findViewById(R.id.categoryText);
+
+        imageButton.setImageResource(R.drawable.todolist_icon);
+        textview.setText(item.getCategoryTitle());
 
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override

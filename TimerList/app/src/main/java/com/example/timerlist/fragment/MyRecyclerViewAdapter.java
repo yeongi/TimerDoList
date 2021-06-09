@@ -89,7 +89,11 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                         //리스트에서 삭제
                         try{
                             if(fragMain.Doing.size() > 0 ){
+                                Toast.makeText(fragMain.getContext(),"삭제 완료" +
+                                        "" +
+                                        "", Toast.LENGTH_SHORT).show();
                                 fragMain.Doing.remove(getAdapterPosition());
+                                fragMain.onRefresh();
                             }
                         }catch (ArrayIndexOutOfBoundsException e){
 

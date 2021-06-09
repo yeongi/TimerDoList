@@ -249,6 +249,7 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View dialogView = getLayoutInflater().inflate(R.layout.save_dialog,null);
 
+
         inputText = (EditText) dialogView.findViewById(R.id.inputText);
         inputTime = (EditText) dialogView.findViewById(R.id.inputTime);
         inputImportant = (EditText) dialogView.findViewById(R.id.inputImport);

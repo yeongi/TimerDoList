@@ -20,6 +20,8 @@ public class DBHelper extends SQLiteOpenHelper
         super(context, DB_NAME, null, DB_VERSION);
     }
 
+
+    // 카테고리
     @Override
     public void onCreate(SQLiteDatabase db)
     {
@@ -36,7 +38,7 @@ public class DBHelper extends SQLiteOpenHelper
         onCreate(db);
     }
 
-    //목록 조회
+    //목록 조회 +  카테고리
     public ArrayList<List> getTodoList(){
         ArrayList<List> todoItems = new ArrayList<>();
 
@@ -62,7 +64,8 @@ public class DBHelper extends SQLiteOpenHelper
     public List getLastList(){
         List todoItem = null;
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM TodoList WHERE MAX(id)", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM TodoList ORDER BY ID DESC LIMIT 1", null);
+        cursor.moveToFirst();
         if(cursor.getCount() !=0){
             int id = cursor.getInt(cursor.getColumnIndex("id"));
             String content = cursor.getString(cursor.getColumnIndex("content"));
@@ -75,14 +78,14 @@ public class DBHelper extends SQLiteOpenHelper
         return todoItem;
     }
 
-    // 목록 추가
+    // 목록 추가 + 카테고리
     public void InsertTodo(String _content, int _time , int _important, String _writeDate){
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("INSERT INTO TodoList (content, time ,important, writeDate) " +
                 "VALUES('" + _content + "','" + _time +"','" + _important + "' ,'" + _writeDate + "' );");
     }
 
-    // 목록 수정
+    // 목록 수정 + 카테고리
     public void UpdateTodo(String _content, int _time, int _important,String _beforeDate) {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("UPDATE TodoList SET content='" + _content + "',time = '" + _time + ",' important = '"+_important+"'" +

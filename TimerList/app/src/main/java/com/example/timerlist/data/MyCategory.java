@@ -1,5 +1,6 @@
 package com.example.timerlist.data;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -8,6 +9,7 @@ import com.felipecsl.asymmetricgridview.library.model.AsymmetricItem;
 
 import org.w3c.dom.Text;
 
+@SuppressLint("ParcelCreator")
 public class MyCategory implements AsymmetricItem {
     private TextView CategoryText;
     private ImageButton imageButton;

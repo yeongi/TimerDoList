@@ -8,6 +8,12 @@
     <com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridView
         android:id="@+id/categoryView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_margin="5sp"
+        android:background="@color/white"
+        android:divider="#00000000"
+        android:dividerHeight="10dp"
+        android:footerDividersEnabled="true"
+        android:headerDividersEnabled="true" />
 
 </FrameLayout>

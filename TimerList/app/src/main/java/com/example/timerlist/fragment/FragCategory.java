@@ -44,12 +44,12 @@ public class FragCategory extends Fragment {
                 new AsymmetricGridViewAdapter<MyCategory>(ct, listView,myCLadapter);
         listView.setAdapter(asymmetricAdapter);
 
-        Categorys.add(new MyCategory("임시"));
-        Categorys.add(new MyCategory("임시"));
-        Categorys.add(new MyCategory("임시"));
-        Categorys.add(new MyCategory("임시"));
-        Categorys.add(new MyCategory("임시"));
-        Categorys.add(new MyCategory("임시"));
+        Categorys.add(new MyCategory("운동"));
+        Categorys.add(new MyCategory("공부"));
+        Categorys.add(new MyCategory("동기부여"));
+        Categorys.add(new MyCategory("라면"));
+        Categorys.add(new MyCategory("계란"));
+        Categorys.add(new MyCategory("미정"));
 
 
         return view;
