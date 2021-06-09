@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="80sp"
+    android:layout_margin="10dp"
+    android:background="#E8E6E6"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/categoryDoText"
+        android:layout_width="130dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:gravity="center"
+        android:text="할 일"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/categoryDoTime"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:text="시 간"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="10sp" />
+
+    <Button
+        android:id="@+id/categorySendButton"
+        android:layout_width="70sp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15sp"
+        android:layout_marginRight="20sp"
+        android:layout_weight="1"
+        android:height="10sp"
+        android:gravity="center"
+        android:text="do" />
+
+    <Button
+        android:id="@+id/categoryEditButton"
+        android:layout_width="70sp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20sp"
+        android:layout_weight="1"
+        android:height="10sp"
+        android:text="EDIT"
+        android:textSize="10sp" />
+</LinearLayout>

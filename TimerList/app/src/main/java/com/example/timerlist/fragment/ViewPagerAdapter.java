@@ -22,11 +22,14 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position){
             case 0:
-                return FragMain.newInstance();
+                FragMain fragMain = new FragMain();
+                return fragMain;
             case 1:
-                return FragCal.newInstance();
+                FragCal fragCal = new FragCal();
+                return fragCal;
             case 2:
-                return FragCategory.newInstance();
+                FragCategory fragCategory = new FragCategory();
+                return fragCategory;
             default:
                 return null;
         }

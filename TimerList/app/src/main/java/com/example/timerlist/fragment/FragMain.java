@@ -15,8 +15,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+
 enum Mode {
     TIMER_MODE ,STOP_WATCH
 };
@@ -73,7 +77,10 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
     EditText inputImportant;
 
     //할 일 변수
-    ArrayList<List> Doing;
+    public ArrayList<List> Doing = null;
+    ArrayList<String> categories = new ArrayList<String>();
+    Spinner categorieSpinner;
+    ArrayAdapter<String> myCategoryArrayAdapter;
 
     @Nullable
     @Override
@@ -100,22 +107,21 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
         //삭제버튼
         deleteButton = rootview.findViewById(R.id.deleteButton);
 
-
-
         nowDoText = rootview.findViewById(R.id.nowDoText);
-
-
-        //어댑터 할당, 어댑터는 기본 어댑터를 확장한 커스텀 어댑터를 사용할 것
-        //adapter = new MyRecyclerViewAdapter(Doing,FragMain.this,ct);
-        //recyclerView.setAdapter(adapter);
-
 
         //리프레쉬 뷰
         mySwipeRefreshLayout = (SwipeRefreshLayout)rootview.findViewById(R.id.swipe_layout);
         mySwipeRefreshLayout.setOnRefreshListener(this);
 
-
         setDBInit();
+
+        //카테고리 리스트 가져 오기
+        categories.add("운동");
+        categories.add("공부");
+        categories.add("동기부여");
+        categories.add("라면");
+        categories.add("계란");
+        categories.add("미정");
 
         return  rootview;
     }
@@ -239,7 +245,7 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
 
     }
 
-
+    String myCategoryTitle;
     //save 버튼 눌렀을 때
     private void saveDoing(View view) {
         //창을 하나 띄어서
@@ -253,6 +259,22 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
         inputText = (EditText) dialogView.findViewById(R.id.inputText);
         inputTime = (EditText) dialogView.findViewById(R.id.inputTime);
         inputImportant = (EditText) dialogView.findViewById(R.id.inputImport);
+        categorieSpinner = (Spinner) dialogView.findViewById(R.id.categorySpinner);
+        myCategoryArrayAdapter = new ArrayAdapter<>(ct,R.layout.support_simple_spinner_dropdown_item,categories);
+        categorieSpinner.setAdapter(myCategoryArrayAdapter);
+
+        categorieSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    myCategoryTitle = categories.get(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
 
         builder.setView(dialogView);
         builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
@@ -265,7 +287,8 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
                         inputText.getText().toString(),
                         Integer.parseInt(inputTime.getText().toString()),
                         Integer.parseInt(inputImportant.getText().toString()),
-                        currentTime
+                        currentTime,
+                        myCategoryTitle
                 );
 
                 // 삽입이 된 디비의 기본키를 찾아야 되 그래야 리스트를 초기화 할 수 있어..

@@ -1,6 +1,7 @@
 package com.example.timerlist.fragment;
 
 import android.content.Context;
+import android.icu.util.ULocale;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,11 +18,14 @@ import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridView;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridViewAdapter;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class FragCategory extends Fragment {
     private View view;
     AsymmetricGridView listView;
+    ArrayList<MyCategory> Categorys;
     Context ct;
+
     public static FragCategory newInstance(){
         FragCategory fragCategory = new FragCategory();
         return fragCategory;
@@ -36,7 +40,7 @@ public class FragCategory extends Fragment {
         listView = (AsymmetricGridView) view.findViewById(R.id.categoryView);
         // Choose your own preferred column width
         listView.setRequestedColumnWidth(Utils.dpToPx(ct, 120));
-        ArrayList<MyCategory> Categorys = new ArrayList<>();
+        Categorys = new ArrayList<>();
 
         // initialize your items array
         CategoryListAdapter myCLadapter = new CategoryListAdapter(Categorys,ct,this);
@@ -51,7 +55,15 @@ public class FragCategory extends Fragment {
         Categorys.add(new MyCategory("계란"));
         Categorys.add(new MyCategory("미정"));
 
-
         return view;
+    }
+
+    public ArrayList<String> getCategoryList(){
+        ArrayList<String> categorys = new ArrayList<String>();
+        for(int i = 0 ; i < Categorys.size() ; i++){
+            MyCategory temp = Categorys.get(i);
+            categorys.add(temp.getCategoryTitle());
+        }
+        return categorys;
     }
 }

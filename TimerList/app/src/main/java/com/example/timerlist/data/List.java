@@ -11,15 +11,17 @@ public class List {
     int image;
     int important;
     String writeDate;
+    String category;
 
 
-    public List(int id , String doing, double time, int important, String date){
+    public List(int id , String doing, double time, int important, String date,String category){
         this.id = id;
         this.doing = doing;
         this.time = time;
         this.image = R.drawable.checkmark;
         this.important = important;
         this.writeDate = date;
+        this.category = category;
     }
 
     public String getDoing(){
@@ -32,6 +34,14 @@ public class List {
 
     public int getImage(){
         return image;
+    }
+
+    public String getCategory(){
+        return category;
+    }
+
+    public void setCategory(String category){
+        this.category = category;
     }
 
     public int getImportant(){

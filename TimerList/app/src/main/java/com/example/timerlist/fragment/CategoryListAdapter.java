@@ -1,15 +1,21 @@
 package com.example.timerlist.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 
+import com.example.timerlist.DoCategoryListAdapter;
 import com.example.timerlist.R;
+import com.example.timerlist.data.List;
 import com.example.timerlist.data.MyCategory;
 import com.example.timerlist.fragment.FragCategory;
 
@@ -19,6 +25,7 @@ public class CategoryListAdapter extends BaseAdapter {
     ArrayList<MyCategory> items;
     Context context;
     FragCategory fragCategory;
+    DoCategoryListAdapter myAdapter;
 
     CategoryListAdapter(ArrayList<MyCategory> items, Context context, FragCategory fragCategory) {
         this.items = items;
@@ -44,10 +51,38 @@ public class CategoryListAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 //버튼 눌렀을때 구현
-                //리스트를 모달창으로 띄우던지
-                //항목을 누르는 이벤트처리가능 어떤것들
+                showAlertDialog();
+
             }
+
+            private void showAlertDialog() {
+
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View view = inflater.inflate(R.layout.dolist_dialog,null);
+
+                final ListView listView = view.findViewById(R.id.categoryDoList);
+
+                myAdapter = new DoCategoryListAdapter(item.getCategoryTitle(),view.getContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(listView.getContext());
+                builder.setTitle(item.getCategoryTitle());
+                builder.setView(view);
+
+                builder.setPositiveButton("확인",null);
+                builder.setAdapter(myAdapter, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+
+
+                builder.show();
+
+            }
+
         });
+
 
         //데이터 셋에서 참조 획득
         MyCategory myCategory = items.get(position);

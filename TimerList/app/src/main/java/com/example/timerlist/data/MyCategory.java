@@ -23,6 +23,7 @@ public class MyCategory implements AsymmetricItem {
         imageButton = button;
     }
 
+    /*
     public void setCategoryText(TextView categoryText) {
         CategoryText = categoryText;
     }
@@ -34,7 +35,7 @@ public class MyCategory implements AsymmetricItem {
     public ImageButton getImageButton() {
         return imageButton;
     }
-
+*/
     @Override
     public int getColumnSpan() {
         return 1;

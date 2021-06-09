@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".fragment.FragMain">
+    tools:context=".fragment.FragMain"
+    android:id="@+id/fragMain">
 
     <LinearLayout
         android:layout_width="match_parent"
