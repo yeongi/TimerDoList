@@ -18,7 +18,7 @@ public class List implements Serializable, Parcelable {
     String category;
 
 
-    public List(int id , String doing, double time, int important, String date,String category){
+    public List(int id , String doing, double time, int important, String date ,String category){
         this.id = id;
         this.doing = doing;
         this.time = time;

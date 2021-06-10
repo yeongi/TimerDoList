@@ -3,6 +3,7 @@ package com.example.timerlist.fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
@@ -20,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +39,7 @@ import java.util.TimerTask;
 enum Mode {
     TIMER_MODE ,STOP_WATCH
 };
+
 
 
 public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -68,6 +71,7 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
     Button modeButton;
     Button saveButton;
     Button deleteButton;
+
     Timer timer;
     TimerTask timerTask;
     Double time = 0.0;
@@ -80,7 +84,6 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
     EditText inputImportant;
 
     //할 일 변수
-
     ArrayList<String> categories = new ArrayList<String>();
     Spinner categorieSpinner;
     ArrayAdapter<String> myCategoryArrayAdapter;
@@ -88,16 +91,6 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        //프래그먼트 수신하기
-        getParentFragmentManager().setFragmentResultListener("todayList", this, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String key, @NonNull Bundle bundle) {
-                // We use a String here, but any type that can be put in a Bundle is supported
-                Doing = bundle.<List>getParcelableArrayList("todayList");
-                loadRecentDB();
-            }
-        });
 
         rootview = (ViewGroup) inflater.inflate(R.layout.frag_main,container,false);
         //fragment의 context 가져 오기
@@ -151,7 +144,7 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
     }
 
     private void loadRecentDB() {
-        Doing = mDBHelper.getTodoList();
+        Doing = mDBHelper.getTodayDoList();
         if (adapter == null){
             adapter = new MyRecyclerViewAdapter(Doing,FragMain.this,ct);
         }
@@ -262,21 +255,22 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
     String myCategoryTitle;
     //save 버튼 눌렀을 때
     private void saveDoing(View view) {
-        //창을 하나 띄어서
-        // 이밑에 인공지능 100 이미지 중요도 매개변수에 각각 넣으면 됨
-        //창을 하나 띄어서
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = requireActivity().getLayoutInflater();
         View dialogView = getLayoutInflater().inflate(R.layout.save_dialog,null);
 
 
         inputText = (EditText) dialogView.findViewById(R.id.inputText);
         inputTime = (EditText) dialogView.findViewById(R.id.inputTime);
         inputImportant = (EditText) dialogView.findViewById(R.id.inputImport);
+
+        inputTime.setHint(time.toString());
+        inputImportant.setText("1");
+
+        //스피너 처리
         categorieSpinner = (Spinner) dialogView.findViewById(R.id.categorySpinner);
         myCategoryArrayAdapter = new ArrayAdapter<>(ct,R.layout.support_simple_spinner_dropdown_item,categories);
         categorieSpinner.setAdapter(myCategoryArrayAdapter);
-
         categorieSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -294,7 +288,6 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
         builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //나중에 db로 구현
                 //DB에 삽입
                 String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
                 mDBHelper.InsertTodo(
@@ -304,9 +297,6 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
                         currentTime,
                         myCategoryTitle
                 );
-
-                // 삽입이 된 디비의 기본키를 찾아야 되 그래야 리스트를 초기화 할 수 있어..
-
                 //UI에 삽입
                 Doing.add(mDBHelper.getLastList());
 
@@ -383,6 +373,7 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
             timerText.setText(getTimerText(0.0));
             time = 0.0;
             saveButton.setVisibility(View.VISIBLE);
+            onRefresh();
             return;
         }
 
@@ -394,7 +385,7 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
             timerText.setText("시간");
             time = 0.0;
             saveButton.setVisibility(View.INVISIBLE);
-
+            onRefresh();
             return;
         }
     }

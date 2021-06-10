@@ -10,6 +10,7 @@ import android.os.Bundle;
 import com.example.timerlist.fragment.ViewPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
 
+
 public class MainActivity extends AppCompatActivity {
 
     private FragmentPagerAdapter fragmentPagerAdapter;

@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import com.example.timerlist.DONE;
 import com.example.timerlist.data.List;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 public class DBHelper extends SQLiteOpenHelper
 
 {
-    private  static final int DB_VERSION = 2;
+    private  static final int DB_VERSION = 1;
     private static final String DB_NAME = "List.db";
     public DBHelper(@Nullable Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -30,7 +31,8 @@ public class DBHelper extends SQLiteOpenHelper
                 "time INTEGER NOT NULL, " +
                 "important INTEGER NOT NULL, " +
                 "writeDate TEXT NOT NULL," +
-                "category TEXT NOT NULL )");
+                "category TEXT NOT NULL ," +
+                "done INTEGER DEFAULT '"+ DONE.DEFAULT +"')");
     }
 
     @Override
@@ -88,6 +90,31 @@ public class DBHelper extends SQLiteOpenHelper
 
         return  todoItems;
     }
+
+    //오늘 할 일 목록 조회
+    public ArrayList<List> getTodayDoList( ){
+        ArrayList<List> todoItems = new ArrayList<>();
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM TodoList WHERE done=100;"
+                , null);
+        if(cursor.getCount() != 0){
+            while (cursor.moveToNext()) {
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String content = cursor.getString(cursor.getColumnIndex("content"));
+                int time = cursor.getInt(cursor.getColumnIndex("time"));
+                int important = cursor.getInt(cursor.getColumnIndex("important"));
+                String writeDate = cursor.getString(cursor.getColumnIndex("writeDate"));
+                String category = cursor.getString(cursor.getColumnIndex("category"));
+
+                List todoItem = new List(id,content,time,important,writeDate,category);
+                todoItems.add(todoItem);
+            }
+        }
+        cursor.close();
+
+        return  todoItems;
+    }
     
     public List getLastList(){
         List todoItem = null;
@@ -117,20 +144,18 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
 
-    public void UpdateTodo(String _content, int _time, int _important,String _beforeDate,String _category) {
+    // 목록 수정 + 카테고리
+    public void UpdateSimpleTodo(String _content, int _time,String _beforeDate,String _category) {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("UPDATE TodoList SET content='" + _content + "'" +
-                ",time = '" + _time + "'" +
-                ", important = '"+_important+"'" +
-                ", category = '"+_category+"'" +
+                ",time = '" + _time + "' WHERE category='"+_category+"'"+
                 ", WHERE writeDate='" + _beforeDate + "'");
     }
 
-    // 목록 수정 + 카테고리
-    public void UpdateSimpleTodo(String _content, int _time, String _category) {
+    // 오늘 할 일 수정
+    public void UpdateDoTodo(DONE done, String _beforeDate) {
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("UPDATE TodoList SET content='" + _content + "'" +
-                ",time = '" + _time + "' WHERE category='"+_category+"'");
+        db.execSQL("UPDATE TodoList SET done ="+done+", WHERE writeDate='" + _beforeDate + "'");
     }
 
     // 목록 삭제

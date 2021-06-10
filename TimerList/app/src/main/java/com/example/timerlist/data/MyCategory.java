@@ -11,31 +11,12 @@ import org.w3c.dom.Text;
 
 @SuppressLint("ParcelCreator")
 public class MyCategory implements AsymmetricItem {
-    private TextView CategoryText;
-    private ImageButton imageButton;
     private String title;
 
     public MyCategory(String title){
         this.title = title;
     }
 
-    public void setImageButton(ImageButton button){
-        imageButton = button;
-    }
-
-    /*
-    public void setCategoryText(TextView categoryText) {
-        CategoryText = categoryText;
-    }
-
-    public TextView getCategoryText() {
-        return CategoryText;
-    }
-
-    public ImageButton getImageButton() {
-        return imageButton;
-    }
-*/
     @Override
     public int getColumnSpan() {
         return 1;

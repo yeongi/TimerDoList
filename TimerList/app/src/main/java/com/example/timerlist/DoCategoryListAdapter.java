@@ -23,7 +23,6 @@ public class DoCategoryListAdapter extends BaseAdapter {
     private DBHelper mDBHelper;
     private Context context;
     private String selectedCategory;
-    private FragMain fragMain;
     ArrayList<List> todayDo;
     EditText editDo;
     EditText editTime;
@@ -69,7 +68,7 @@ public class DoCategoryListAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                      //FragMain..Doing.add(item);
-                todayDo.add(item);
+                mDBHelper.UpdateDoTodo(DONE.TODAY_DOING,item.getWriteDate());
             }
         });
 
@@ -90,14 +89,15 @@ public class DoCategoryListAdapter extends BaseAdapter {
                     public void onClick(DialogInterface dialog, int which) {
                         //확인 눌렀을때 실행되는 내용
                         mDBHelper.UpdateSimpleTodo(editDo.getText().toString(),Integer.
-                                parseInt(editTime.getText().toString()),item.getCategory());
+                                parseInt(editTime.getText().toString()),item.getWriteDate(),item.getCategory());
 
                     }
                 });
-                builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton("삭제", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //취소 눌렀을때 실행되는 내용
+                        mDBHelper.deleteTodo(item.getWriteDate());
                     }
                 });
                 builder.show();

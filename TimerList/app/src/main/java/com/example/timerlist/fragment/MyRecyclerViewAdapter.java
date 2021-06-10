@@ -1,10 +1,13 @@
 package com.example.timerlist.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.timerlist.DONE;
 import com.example.timerlist.R;
 import com.example.timerlist.data.List;
 import com.example.timerlist.db.DBHelper;
@@ -43,9 +47,12 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         public Button deleteButton;
         private FragMain fragMain;
         private Context context;
+        private DBHelper mDBHelper;
+        private EditText editDo;
+        private EditText editTime;
 
 
-        public MyViewHolder(@NonNull View view,FragMain fragMain,Context context) {
+        public MyViewHolder(@NonNull View view, FragMain fragMain, Context context, DBHelper mDBHelper) {
             super(view);
             this.imageView = view.findViewById(R.id.iv_pic);
             this.textView = view.findViewById(R.id.tv_text);
@@ -54,16 +61,26 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
             this.deleteButton = view.findViewById(R.id.deleteButton);
             this.fragMain = fragMain;
             this.context = context;
+            this.mDBHelper = mDBHelper;
+
         }
 
-        public void setItem(List item){
+        public void setItem(List item , DBHelper dbhelper,Context context){
             textView.setText(item.getDoing());
             doText.setText(item.getDoing());
             imageView.setImageResource(item.getImage());
+            if(fragMain.CurrentMode == Mode.TIMER_MODE){
+                sendButton.setText("DO");
+                sendButton.setVisibility(View.VISIBLE);
+            }
+            else
+                sendButton.setVisibility(View.INVISIBLE);
             sendButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     if(fragMain.CurrentMode == Mode.TIMER_MODE){
+
                         String temp = (doText.getText()).toString();
                         if(fragMain.timerStarted){
                             Toast.makeText(fragMain.getContext(), "타이머가 실행 중 입니다.", Toast.LENGTH_SHORT).show();
@@ -74,9 +91,9 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                         fragMain.time = item.getTime();
                         fragMain.doTime = item.getTime();
                         return;
-                    }
-                    if (fragMain.CurrentMode == Mode.STOP_WATCH){
-                        Toast.makeText(fragMain.getContext(), "스탑 워치 리스트 구현 예정", Toast.LENGTH_SHORT).show();
+
+                    }else{
+
                     }
                 }
             });
@@ -85,29 +102,40 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                 public void onClick(View v) {
                     //삭제 구현
                     if(fragMain.CurrentMode == Mode.TIMER_MODE){
-                        //ToDoList 모드 일때 삭제 버튼
-                        //리스트에서 삭제
-                        try{
-                            if(fragMain.Doing.size() > 0 ){
-                                Toast.makeText(fragMain.getContext(),"삭제 완료" +
-                                        "" +
-                                        "", Toast.LENGTH_SHORT).show();
-                                fragMain.Doing.remove(getAdapterPosition());
-                                fragMain.onRefresh();
-                            }
-                        }catch (ArrayIndexOutOfBoundsException e){
-
-                        }
-                        //어댑터에서 리사이클러 뷰에 반영
+                        deleteItem(item);
                         return;
                     }
                     if (fragMain.CurrentMode == Mode.STOP_WATCH){
                         //수정예정
-                        Toast.makeText(fragMain.getContext(), "스탑 워치 리스트 구현 예정", Toast.LENGTH_SHORT).show();
+                        //리스트에서 삭제
+                        deleteItem(item);
                     }
 
                 }
             });
+        }
+
+        private void deleteItem(List item) {
+            if (fragMain.timerStarted) {
+                Toast.makeText(fragMain.getContext(), "타이머가 실행 중 입니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            //ToDoList 모드 일때 삭제 버튼
+            //리스트에서 삭제
+            try {
+                if (fragMain.Doing.size() > 0) {
+                    mDBHelper.UpdateDoTodo(DONE.DEFAULT,item.getWriteDate());
+                    Toast.makeText(fragMain.getContext(), "삭제 완료" +
+                            "" +
+                            "", Toast.LENGTH_SHORT).show();
+                    fragMain.Doing.remove(getAdapterPosition());
+                    fragMain.onRefresh();
+                }
+            } catch (ArrayIndexOutOfBoundsException e) {
+
+            }
+            //어댑터에서 리사이클러 뷰에 반영
+            return;
         }
     }
 
@@ -118,7 +146,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View holderView = LayoutInflater.from(parent.getContext()).inflate(R.layout.holder_view,parent,false);
-        MyViewHolder myViewHolder = new MyViewHolder(holderView,fragMain,context);
+        MyViewHolder myViewHolder = new MyViewHolder(holderView,fragMain,context,mDBHelper);
         return myViewHolder;
     }
 
@@ -127,7 +155,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int position) {
         //데이터를 연결한다.
         List item = items.get(position);
-        myViewHolder.setItem(item);
+        myViewHolder.setItem(item, mDBHelper,context);
         myViewHolder.textView.setText("DO");
     }
 

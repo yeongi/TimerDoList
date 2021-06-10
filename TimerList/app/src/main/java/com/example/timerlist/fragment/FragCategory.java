@@ -68,12 +68,4 @@ public class FragCategory extends Fragment {
         return view;
     }
 
-    public ArrayList<String> getCategoryList(){
-        ArrayList<String> categorys = new ArrayList<String>();
-        for(int i = 0 ; i < Categorys.size() ; i++){
-            MyCategory temp = Categorys.get(i);
-            categorys.add(temp.getCategoryTitle());
-        }
-        return categorys;
-    }
 }
