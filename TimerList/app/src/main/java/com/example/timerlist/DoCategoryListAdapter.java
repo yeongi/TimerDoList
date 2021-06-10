@@ -89,7 +89,7 @@ public class DoCategoryListAdapter extends BaseAdapter {
                     public void onClick(DialogInterface dialog, int which) {
                         //확인 눌렀을때 실행되는 내용
                         mDBHelper.UpdateSimpleTodo(editDo.getText().toString(),Integer.
-                                parseInt(editTime.getText().toString()),item.getWriteDate(),item.getCategory());
+                                parseInt(editTime.getText().toString()),item.getWriteDate());
 
                     }
                 });

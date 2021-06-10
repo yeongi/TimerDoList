@@ -26,6 +26,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.timerlist.DONE;
 import com.example.timerlist.data.List;
 import com.example.timerlist.R;
 import com.example.timerlist.db.DBHelper;
@@ -47,8 +48,6 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
     Context ct;
     SwipeRefreshLayout mySwipeRefreshLayout;
     private DBHelper mDBHelper;
-
-    ArrayList<List> Doing = null;
 
     public static FragMain newInstance( ){
         FragMain FragMain = new FragMain();
@@ -77,6 +76,7 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
     Double time = 0.0;
     Double doTime = 0.0;
     boolean timerStarted = false;
+    String nowDate;
 
     //다이얼로그 변수
     EditText inputText;
@@ -144,10 +144,7 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
     }
 
     private void loadRecentDB() {
-        Doing = mDBHelper.getTodayDoList();
-        if (adapter == null){
-            adapter = new MyRecyclerViewAdapter(Doing,FragMain.this,ct);
-        }
+        adapter = new MyRecyclerViewAdapter(FragMain.this,ct);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
     }
@@ -157,7 +154,7 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
     @Override
     public void onRefresh() {
         //새로고침
-        recyclerView.setAdapter(adapter);
+        loadRecentDB();
         //새로고침 완료
         mySwipeRefreshLayout.setRefreshing(false);
     }
@@ -264,7 +261,8 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
         inputTime = (EditText) dialogView.findViewById(R.id.inputTime);
         inputImportant = (EditText) dialogView.findViewById(R.id.inputImport);
 
-        inputTime.setHint(time.toString());
+        inputText.setHint("할 일을 입력하세요");
+        inputTime.setHint("초 단위로 입력하세요");
         inputImportant.setText("1");
 
         //스피너 처리
@@ -297,9 +295,6 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
                         currentTime,
                         myCategoryTitle
                 );
-                //UI에 삽입
-                Doing.add(mDBHelper.getLastList());
-
             }
         });
         builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -323,6 +318,19 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
                         time--;
 
                     timerText.setText(getTimerText(time));
+
+                    if(time <= 0){
+                        timerText.setText("완료!");
+                        mDBHelper.UpdateDoTodo(DONE.TODAY_DID,nowDate);
+                        CurrentMode = Mode.TIMER_MODE;
+                        modeText.setText("TIMER");
+                        nowDoText.setText("DO");
+                        timerStarted = false;
+                        setButtonUI("S", R.color.green);
+
+                        timerTask.cancel();
+
+                    }
                 }
             };
             timer.scheduleAtFixedRate(timerTask,0,1000);
@@ -373,7 +381,6 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
             timerText.setText(getTimerText(0.0));
             time = 0.0;
             saveButton.setVisibility(View.VISIBLE);
-            onRefresh();
             return;
         }
 
@@ -385,7 +392,6 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
             timerText.setText("시간");
             time = 0.0;
             saveButton.setVisibility(View.INVISIBLE);
-            onRefresh();
             return;
         }
     }

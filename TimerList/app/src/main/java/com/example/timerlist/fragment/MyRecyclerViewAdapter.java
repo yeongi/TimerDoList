@@ -21,8 +21,9 @@ import com.example.timerlist.data.List;
 import com.example.timerlist.db.DBHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.MyViewHolder> {
+public class  MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.MyViewHolder> {
     // 이 데이터들을 가지고 각 뷰 홀더에 들어갈 텍스트 뷰에 연결할 것
     ArrayList<List> items;
     private DBHelper mDBHelper;
@@ -30,11 +31,11 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     private Context context;
 
 
-    public MyRecyclerViewAdapter(ArrayList<List> items,FragMain fragMain, Context context) {
-        this.items = items;
+    public MyRecyclerViewAdapter(FragMain fragMain, Context context) {
         this.fragMain = fragMain;
         this.context = context;
         mDBHelper = new DBHelper(context);
+        items = mDBHelper.getTodayDoList();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
@@ -48,11 +49,10 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         private FragMain fragMain;
         private Context context;
         private DBHelper mDBHelper;
-        private EditText editDo;
-        private EditText editTime;
+        private ArrayList<List> items;
 
 
-        public MyViewHolder(@NonNull View view, FragMain fragMain, Context context, DBHelper mDBHelper) {
+        public MyViewHolder(@NonNull View view, FragMain fragMain, Context context, DBHelper mDBHelper,ArrayList<List> items) {
             super(view);
             this.imageView = view.findViewById(R.id.iv_pic);
             this.textView = view.findViewById(R.id.tv_text);
@@ -62,7 +62,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
             this.fragMain = fragMain;
             this.context = context;
             this.mDBHelper = mDBHelper;
-
+            this.items = items;
         }
 
         public void setItem(List item , DBHelper dbhelper,Context context){
@@ -86,10 +86,12 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                             Toast.makeText(fragMain.getContext(), "타이머가 실행 중 입니다.", Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        fragMain.nowDoText.setText(doText.getText());
+                        fragMain.nowDoText.setText(temp);
                         fragMain.timerText.setText("");
                         fragMain.time = item.getTime();
                         fragMain.doTime = item.getTime();
+                        fragMain.nowDate = item.getWriteDate();
+
                         return;
 
                     }else{
@@ -123,12 +125,12 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
             //ToDoList 모드 일때 삭제 버튼
             //리스트에서 삭제
             try {
-                if (fragMain.Doing.size() > 0) {
+                if (items.size() > 0) {
                     mDBHelper.UpdateDoTodo(DONE.DEFAULT,item.getWriteDate());
                     Toast.makeText(fragMain.getContext(), "삭제 완료" +
                             "" +
                             "", Toast.LENGTH_SHORT).show();
-                    fragMain.Doing.remove(getAdapterPosition());
+                    items.remove(getAdapterPosition());
                     fragMain.onRefresh();
                 }
             } catch (ArrayIndexOutOfBoundsException e) {
@@ -146,7 +148,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View holderView = LayoutInflater.from(parent.getContext()).inflate(R.layout.holder_view,parent,false);
-        MyViewHolder myViewHolder = new MyViewHolder(holderView,fragMain,context,mDBHelper);
+        MyViewHolder myViewHolder = new MyViewHolder(holderView,fragMain,context,mDBHelper,items);
         return myViewHolder;
     }
 
@@ -155,7 +157,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int position) {
         //데이터를 연결한다.
         List item = items.get(position);
-        myViewHolder.setItem(item, mDBHelper,context);
+        myViewHolder.setItem(item,mDBHelper,context);
         myViewHolder.textView.setText("DO");
     }
 

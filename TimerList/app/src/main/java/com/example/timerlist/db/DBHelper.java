@@ -32,7 +32,7 @@ public class DBHelper extends SQLiteOpenHelper
                 "important INTEGER NOT NULL, " +
                 "writeDate TEXT NOT NULL," +
                 "category TEXT NOT NULL ," +
-                "done INTEGER DEFAULT '"+ DONE.DEFAULT +"')");
+                "done TEXT DEFAULT '"+ DONE.DEFAULT +"')");
     }
 
     @Override
@@ -44,10 +44,8 @@ public class DBHelper extends SQLiteOpenHelper
     //목록 조회 +  카테고리
     public ArrayList<List> getTodoList(){
         ArrayList<List> todoItems = new ArrayList<>();
-
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM TodoList ORDER BY writeDate DESC", null);
-        cursor.moveToFirst();
         if(cursor.getCount() != 0){
             while (cursor.moveToNext()) {
                 int id = cursor.getInt(cursor.getColumnIndex("id"));
@@ -96,7 +94,7 @@ public class DBHelper extends SQLiteOpenHelper
         ArrayList<List> todoItems = new ArrayList<>();
 
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM TodoList WHERE done=100;"
+        Cursor cursor = db.rawQuery("SELECT * FROM TodoList WHERE done ='TODAY_DOING';"
                 , null);
         if(cursor.getCount() != 0){
             while (cursor.moveToNext()) {
@@ -145,17 +143,18 @@ public class DBHelper extends SQLiteOpenHelper
 
 
     // 목록 수정 + 카테고리
-    public void UpdateSimpleTodo(String _content, int _time,String _beforeDate,String _category) {
+    public void UpdateSimpleTodo(String _content, int _time,String _beforeDate) {
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("UPDATE TodoList SET content='" + _content + "'" +
-                ",time = '" + _time + "' WHERE category='"+_category+"'"+
-                ", WHERE writeDate='" + _beforeDate + "'");
+        db.execSQL("UPDATE TodoList SET content='" + _content +"'," +
+                "time = '" + _time + "'" +
+                "WHERE writeDate='" + _beforeDate + "'");
     }
 
     // 오늘 할 일 수정
     public void UpdateDoTodo(DONE done, String _beforeDate) {
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("UPDATE TodoList SET done ="+done+", WHERE writeDate='" + _beforeDate + "'");
+        db.execSQL("UPDATE TodoList SET done = '"+done+"'" +
+                " WHERE writeDate='" + _beforeDate + "'");
     }
 
     // 목록 삭제
