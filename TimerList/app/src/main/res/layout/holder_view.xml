@@ -27,7 +27,9 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
-                android:layout_margin="5dp" />
+                android:layout_margin="5dp"
+                android:src="@drawable/category"
+                android:scaleType="fitCenter"/>
 
             <TextView
                 android:id="@+id/tv_text"
@@ -75,14 +77,14 @@
 
                 <Button
                     android:id="@+id/deleteButton"
-                    android:layout_width="50sp"
-                    android:layout_height="60sp"
+                    android:layout_width="27dp"
+                    android:layout_height="54dp"
                     android:layout_gravity="center"
                     android:layout_margin="20sp"
                     android:layout_marginRight="20sp"
-                    android:layout_weight="2"
+                    android:layout_weight="1"
                     android:height="40dp"
-                    android:text="삭제" />
+                    android:background="@drawable/delete" />
             </LinearLayout>
 
         </LinearLayout>

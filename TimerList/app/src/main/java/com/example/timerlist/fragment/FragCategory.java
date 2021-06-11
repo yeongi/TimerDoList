@@ -62,8 +62,12 @@ public class FragCategory extends Fragment {
         Categorys.add(new MyCategory("공부"));
         Categorys.add(new MyCategory("동기부여"));
         Categorys.add(new MyCategory("라면"));
-        Categorys.add(new MyCategory("계란"));
-        Categorys.add(new MyCategory("미정"));
+        Categorys.add(new MyCategory("계란 조리법"));
+        Categorys.add(new MyCategory("파스타 면삶기"));
+        Categorys.add(new MyCategory("임시"));
+        Categorys.add(new MyCategory("임시1"));
+        Categorys.add(new MyCategory("임시2"));
+        Categorys.add(new MyCategory("임시3"));
 
         return view;
     }

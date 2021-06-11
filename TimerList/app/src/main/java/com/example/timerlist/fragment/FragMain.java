@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.example.timerlist.DONE;
 import com.example.timerlist.data.List;
 import com.example.timerlist.R;
+import com.example.timerlist.data.MyCategory;
 import com.example.timerlist.db.DBHelper;
 
 import java.text.SimpleDateFormat;
@@ -127,8 +128,9 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
         categories.add("공부");
         categories.add("동기부여");
         categories.add("라면");
-        categories.add("계란");
-        categories.add("미정");
+        categories.add("계란 조리법");
+        categories.add("파스타 면삶기");
+        categories.add("임시");
 
         return  rootview;
     }
@@ -237,12 +239,12 @@ public class FragMain extends Fragment implements SwipeRefreshLayout.OnRefreshLi
             }
 
             timerStarted = true;
-            setButtonUI("S", R.color.red);
+           // setButtonUI("S", R.color.red);
 
             startTimer();
         }else{
             timerStarted = false;
-            setButtonUI("S", R.color.green);
+            //setButtonUI("S", R.color.green);
 
             timerTask.cancel();
         }

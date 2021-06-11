@@ -2,17 +2,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="400sp"
     android:layout_height="400sp"
+    android:background="#45527B"
     android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:height="40sp"
+        android:gravity="center"
+        android:text="저장하기"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="376dp"
         android:layout_height="153dp"
+        android:layout_gravity="center"
         android:layout_margin="10sp"
         android:layout_weight="1"
-        android:background="#FFFFBB33"
-        android:scaleType="center"
-        app:srcCompat="@drawable/main_icon" />
+        android:background="#CCD7E1"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/save" />
 
     <EditText
         android:id="@+id/inputText"
@@ -23,7 +36,8 @@
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
         android:hint="ToDoText"
-        android:inputType="text" />
+        android:inputType="text"
+        android:shadowColor="#000000" />
 
     <EditText
         android:id="@+id/inputTime"
@@ -34,7 +48,8 @@
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
         android:hint="ToDoTime"
-        android:inputType="text" />
+        android:inputType="text"
+        android:shadowColor="#000000" />
 
     <EditText
         android:id="@+id/inputImport"
@@ -45,7 +60,8 @@
         android:layout_marginRight="4dp"
         android:layout_marginBottom="16dp"
         android:hint="ToDoImportant"
-        android:inputType="text" />
+        android:inputType="text"
+        android:shadowColor="#000000" />
 
     <Spinner
         android:id="@+id/categorySpinner"

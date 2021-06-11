@@ -48,7 +48,7 @@ public class CategoryListAdapter extends BaseAdapter{
         ImageButton imageButton = (ImageButton) convertView.findViewById(R.id.categoryImageButton);
         TextView textview = (TextView)convertView.findViewById(R.id.categoryText);
 
-        imageButton.setImageResource(R.drawable.todolist_icon);
+        imageButton.setImageResource(R.drawable.category);
         textview.setText(item.getCategoryTitle());
 
         imageButton.setOnClickListener(new View.OnClickListener() {
